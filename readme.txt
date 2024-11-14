@@ -1,9 +1,14 @@
 
+--Descarga Edge Webdriver
 
---Primero crea un entorno virtual
---Activalo
-lolscraper_venv\Scripts\activate
+--Crea el archivo de "config.py" para establecer las variables, ejemplos de configuracion:
+EDGE_DRIVER_PATH = r"Directorio a tu edge webdriver"
+SUMMONER_NAME = "Nombre de invocador-Lema"
+GAMEMODE = "SOLORANKED" / "FLEXRANKED"
+SERVER = "lan"
+INVOCADORES = ["invocador 1", "invocador 2", "invocador 3", "invocador 4", "invocador 5"] 
 
---Despues instala las dependencias
-pip install -r requirements.txt
+--Crea un entorno virtual: python venv lolscraper_venv
+--Activalo: lolscraper_venv\Scripts\activate
+--Instala las dependencias: pip install -r requirements.txt
 

@@ -8,13 +8,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
+# Importar variables desde config.py
+from config import EDGE_DRIVER_PATH, INVOCADORES
+
 # Configurar las opciones de Edge
 edge_options = Options()
 edge_options.add_argument("--start-maximized")
 edge_options.add_argument("--log-level=3")  # Silenciar la salida de log del navegador
-
-# Ruta al controlador de Edge WebDriver
-EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
@@ -46,7 +46,7 @@ with open(csv_file, "w", newline="", encoding="utf-8") as file:
     ])
 
 # Arreglo de invocadores del equipo
-invocadores_equipo = ["kingpower", "arielpalma2", "ceress", "IIIPatrocloI", "saidgalan"]
+invocadores_equipo = INVOCADORES
 
 def extraer_resultado_y_duracion():
     try:

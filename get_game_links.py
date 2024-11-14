@@ -8,13 +8,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
+# Importar variables desde config.py
+from config import EDGE_DRIVER_PATH, SUMMONER_NAME, SERVER, INVOCADORES
+
 # Configurar las opciones de Edge
 edge_options = Options()
+
 edge_options.add_argument("--start-maximized")
 edge_options.add_argument("--log-level=3")  # Silenciar la salida de log del navegador
-
-# Ruta al controlador de Edge WebDriver
-EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
@@ -24,15 +25,8 @@ if not os.path.isfile(EDGE_DRIVER_PATH):
 service = Service(EDGE_DRIVER_PATH)
 driver = webdriver.Edge(service=service, options=edge_options)
 
-# Nombre del invocador y servidor
-summoner_name = "KINGPOWER-ECU"
-server = "lan"
-
 # URL del sitio web
-url = f"https://www.op.gg/summoners/{server}/{summoner_name}?queue_type=FLEXRANKED"
-
-# Lista de invocadores a buscar
-invocadores = ["kingpower", "arielpalma2", "ceress", "IIIPatrocloI", "saidgalan"]
+url = f"https://www.op.gg/summoners/{SERVER}/{SUMMONER_NAME}?queue_type=FLEXRANKED"
 
 try:
     # Navegar a la URL
@@ -78,8 +72,8 @@ try:
                     continue
 
                 # Comprobar si al menos 3 invocadores están en la partida
-                nombres_invocadores = partida_element.text.lower().replace(" ", "").replace("-", "")
-                count = sum(1 for inv in invocadores if inv.lower().replace(" ", "").replace("-", "") in nombres_invocadores)
+                invocadores_equipo = partida_element.text.lower().replace(" ", "").replace("-", "")
+                count = sum(1 for inv in INVOCADORES if inv.lower().replace(" ", "").replace("-", "") in invocadores_equipo)
                 if count >= 3:
                     # Abrir los detalles de la partida para obtener el enlace
                     try:

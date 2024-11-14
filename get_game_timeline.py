@@ -11,15 +11,16 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import os
 
+# Importar variables desde config.py
+from config import EDGE_DRIVER_PATH, INVOCADORES
+
 # Ruta del archivo que contiene los enlaces de las partidas
 PARTIDAS_LINKS_FILE = "partidas_links.txt"
 # Archivo CSV de salida
 OUTPUT_CSV_FILE = "eventos_importantes.csv"
-# Ruta al controlador de Edge WebDriver
-EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 
 # Arreglo de invocadores del equipo
-invocadores_equipo = ["kingpower", "arielpalma2", "ceress", "IIIPatrocloI", "saidgalan"]
+invocadores_equipo = INVOCADORES
 
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
