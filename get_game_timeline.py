@@ -18,6 +18,9 @@ OUTPUT_CSV_FILE = "eventos_importantes.csv"
 # Ruta al controlador de Edge WebDriver
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 
+# Arreglo de invocadores del equipo
+invocadores_equipo = ["kingpower", "arielpalma2", "ceress", "IIIPatrocloI", "saidgalan"]
+
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
     raise FileNotFoundError(f"El archivo del controlador no se encuentra en la ruta especificada: {EDGE_DRIVER_PATH}")
@@ -54,6 +57,13 @@ def extraer_eventos_importantes(html, partida_numero):
 
     botones_eventos = timeline_div.find_all('button', class_='timeline--WIN') + timeline_div.find_all('button', class_='timeline--LOSE')
 
+    # Extraer información de los equipos
+    equipo_azul_div = soup.find('div', class_='team--blue')
+    equipo_rojo_div = soup.find('div', class_='team--red')
+    
+    equipo_azul_invocadores = [span.get_text(strip=True).lower() for span in equipo_azul_div.find_all('span', class_='name')] if equipo_azul_div else []
+    equipo_rojo_invocadores = [span.get_text(strip=True).lower() for span in equipo_rojo_div.find_all('span', class_='name')] if equipo_rojo_div else []
+
     for boton in botones_eventos:
         mensaje_div = boton.find('div', class_='message')
         if not mensaje_div:
@@ -69,37 +79,51 @@ def extraer_eventos_importantes(html, partida_numero):
         tiempo_div = mensaje_div.find('div', class_='time')
         tiempo = tiempo_div.get_text(strip=True) if tiempo_div else "N/A"
 
-        invocador_elements = mensaje_div.find_all('span', class_='css-ao94tw')
+        invocador_elements = mensaje_div.find_all('span', class_='name')
         campeon_elements = mensaje_div.find_all('img', alt=True)
 
         if len(campeon_elements) >= 1 and len(invocador_elements) >= 1:
             campeon = campeon_elements[0]['alt']
-            invocador = invocador_elements[0].get_text(strip=True)
+            invocador = invocador_elements[0].get_text(strip=True).lower()
         else:
             campeon, invocador = "N/A", "N/A"
 
+        # Determinar el equipo del invocador
+        if invocador in equipo_azul_invocadores:
+            lado = "Equipo Azul"
+        elif invocador in equipo_rojo_invocadores:
+            lado = "Equipo Rojo"
+        else:
+            lado = "N/A"
+
+        # Determinar si el invocador pertenece al equipo especificado
+        pertenece_al_equipo = "yes" if invocador in [i.lower() for i in invocadores_equipo] else "no"
+
         if "Primera Sangre" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Sangre", invocador, campeon, "N/A", "N/A"])
+            eventos.append([partida_numero, tiempo, "Primera Sangre", invocador, campeon, "N/A", "N/A", lado, pertenece_al_equipo])
         elif "Primera Torre" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Torre", invocador, campeon, "Torre", "N/A"])
+            eventos.append([partida_numero, tiempo, "Primera Torre", invocador, campeon, "Torre", "N/A", lado, pertenece_al_equipo])
         elif "Dragón Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Dragón Asesinado", invocador, campeon, "Dragón", "N/A"])
+            eventos.append([partida_numero, tiempo, "Dragón Asesinado", invocador, campeon, "Dragón", "N/A", lado, pertenece_al_equipo])
         elif "Horda Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Larva Asesinada", invocador, campeon, "Horda", "N/A"])
+            eventos.append([partida_numero, tiempo, "Larva Asesinada", invocador, campeon, "Horda", "N/A", lado, pertenece_al_equipo])
         elif "Barón Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Barón Asesinado", invocador, campeon, "Barón", "N/A"])
+            eventos.append([partida_numero, tiempo, "Barón Asesinado", invocador, campeon, "Barón", "N/A", lado, pertenece_al_equipo])
         elif "Primera Torreta Destruida" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Torreta Destruida", invocador, campeon, "Torreta", "N/A"])
+            eventos.append([partida_numero, tiempo, "Primera Torreta Destruida", invocador, campeon, "Torreta", "N/A", lado, pertenece_al_equipo])
 
     return eventos
 
 # Escribir los eventos en un archivo CSV
 def escribir_eventos_csv(eventos, file_path):
-    with open(file_path, 'a', newline='', encoding='utf-8') as csvfile:
+    # Si el archivo ya existe, eliminarlo para comenzar desde cero
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
-        # Escribir encabezados si el archivo está vacío
-        if os.stat(file_path).st_size == 0:
-            csvwriter.writerow(["Partida", "Tiempo", "Evento", "Invocador", "Campeón", "Objetivo", "Invocador Objetivo"])
+        # Escribir encabezados
+        csvwriter.writerow(["Partida", "Tiempo", "Evento", "Invocador", "Campeón", "Objetivo", "Invocador Objetivo", "Lado", "Team"])
         # Escribir datos
         for evento in eventos:
             csvwriter.writerow(evento)
