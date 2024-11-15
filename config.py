@@ -1,7 +1,7 @@
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "Croac-LAN"
+SUMMONER_NAME = "Santilolazo-LAN"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["Croac", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle"]
+INVOCADORES = ["ShadowOfAPotato", "Santilolazo", "Samael505", "Scyfie", "Norever"]
 BUSCAR_CANT = 3
-TEAM_NAME = "Mckacos"
+TEAM_NAME = "Turkia Gaming Squad"

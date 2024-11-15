@@ -13,13 +13,13 @@ TEAM_NAME = "RLG"
 ------------------------------------------------------------------------------------------------------------------
                 Contrincantes
 ------------------------------------------------------------------------------------------------------------------
-EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "Croac-LAN"
-GAMEMODE = "FLEXRANKED"
-SERVER = "lan"
-INVOCADORES = ["Croac", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle"]
-BUSCAR_CANT = 3
-TEAM_NAME = "Mckacos"
+    EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
+    SUMMONER_NAME = "Croac-LAN"
+    GAMEMODE = "FLEXRANKED"
+    SERVER = "lan"
+    INVOCADORES = ["Croac", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle"]
+    BUSCAR_CANT = 3
+    TEAM_NAME = "Mckacos"
 ------------------------------------------------------------------------------------------------------------------
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 SUMMONER_NAME = "Santilolazo-LAN"
