@@ -2,34 +2,66 @@ Reemplaza las variables en Config.py para analizar a cada equipo:
 
 ------------------------------------------------------------------------------------------------------------------
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "KINGPOWER-ECU"
+SUMMONER_NAME = "Croac-LAN"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["kingpower", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle", "zuluaga123"]
+INVOCADORES = ["Croac", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle"]
 BUSCAR_CANT = 3
 TEAM_NAME = "Mckacos"
 ------------------------------------------------------------------------------------------------------------------
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "KINGPOWER-ECU"
+SUMMONER_NAME = "Santilolazo-LAN"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["kingpower", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle", "zuluaga123"]
+INVOCADORES = ["ShadowOfAPotato", "Santilolazo", "Samael505", "Scyfie", "Norever"]
 BUSCAR_CANT = 3
-TEAM_NAME = "Mckacos"
+TEAM_NAME = "Turkia Gaming Squad"
 ------------------------------------------------------------------------------------------------------------------
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "KINGPOWER-ECU"
+SUMMONER_NAME = "OHIOringer-SIGMA"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["kingpower", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle", "zuluaga123"]
+INVOCADORES = ["OHIOringer", "Simprax", "Skibidinii", "xXRizzUwUXx", "SigmaBertoncio69"]
 BUSCAR_CANT = 3
-TEAM_NAME = "Mckacos"
+TEAM_NAME = "Hawk Tuah Fc"
 ------------------------------------------------------------------------------------------------------------------
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
-SUMMONER_NAME = "KINGPOWER-ECU"
+SUMMONER_NAME = "STIXGT-LAN"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["kingpower", "Poro Dislexico", "Guideau", "Don Mckako", "MoonlightBeatle", "zuluaga123"]
+INVOCADORES = ["STIXGT", "katarinaDiff", "Randy04", "Report Pliniopro", "Tulijuli"]
 BUSCAR_CANT = 3
-TEAM_NAME = "Mckacos"
+TEAM_NAME = "Jamoncin"
 ------------------------------------------------------------------------------------------------------------------
+EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
+SUMMONER_NAME = "STIXGT-LAN"
+GAMEMODE = "FLEXRANKED"
+SERVER = "lan"
+INVOCADORES = ["STIXGT", "katarinaDiff", "Randy04", "Report", "Tulijuli"]
+BUSCAR_CANT = 3
+TEAM_NAME = ""
+------------------------------------------------------------------------------------------------------------------
+EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
+SUMMONER_NAME = "Sitortiz50-LAN"
+GAMEMODE = "FLEXRANKED"
+SERVER = "lan"
+INVOCADORES = ["PhantomRider", "JC11", "itsfenrirxx", "ZD Wizard", "Sitortiz50"]
+BUSCAR_CANT = 3
+TEAM_NAME = "Equipo buena maravilla on"
+------------------------------------------------------------------------------------------------------------------
+EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
+SUMMONER_NAME = "STIXGT-LAN"
+GAMEMODE = "FLEXRANKED"
+SERVER = "lan"
+INVOCADORES = ["STIXGT", "katarinaDiff", "Randy04", "Report", "Tulijuli"]
+BUSCAR_CANT = 3
+TEAM_NAME = ""
+------------------------------------------------------------------------------------------------------------------
+                incompleto de momento
+EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
+SUMMONER_NAME = "Musashi-EAN"
+GAMEMODE = "FLEXRANKED"
+SERVER = "lan"
+INVOCADORES = ["Tanque de flores", "WarriorRS", "Musashi", "Jistoria", ""]
+BUSCAR_CANT = 3
+TEAM_NAME = "Vongola Family VFX"
