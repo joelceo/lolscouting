@@ -9,12 +9,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 # Importar variables desde config.py
-from config import EDGE_DRIVER_PATH, INVOCADORES
+from config import EDGE_DRIVER_PATH, INVOCADORES, TEAM_NAME
 
 # Configurar las opciones de Edge
 edge_options = Options()
+edge_options.add_argument("--headless")  # Ejecutar en modo headless
+edge_options.add_argument("--disable-blink-features=AutomationControlled")  # Evitar la detección de headless
 edge_options.add_argument("--start-maximized")
-edge_options.add_argument("--log-level=3")  # Silenciar la salida de log del navegador
+edge_options.add_argument("--log-level=3")
+edge_options.add_argument("--disable-gpu")
+edge_options.add_argument("--no-sandbox")
+edge_options.add_argument("--disable-dev-shm-usage")
+edge_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+edge_options.add_argument("--enable-unsafe-swiftshader")  # Habilitar SwiftShader para evitar advertencias de WebGL
+
 
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
@@ -101,8 +109,7 @@ def extraer_rango_soloq(jugador_element):
         rango_element = jugador_element.find_element(By.CSS_SELECTOR, 'td.name div.tier div')
         rango_soloqueue = rango_element.text if rango_element else "N/A"
     except NoSuchElementException:
-        rango_soloqueue = "N/A"
-        print("No se encontró el rango de SoloQueue.")  # Debugging output
+        rango_soloqueue = "Unranked"
     return rango_soloqueue
 
 def extraer_op_score(jugador_element):
@@ -110,10 +117,8 @@ def extraer_op_score(jugador_element):
         # Extraer el elemento div que contiene el OP Score
         score_element = jugador_element.find_element(By.CSS_SELECTOR, 'td.op-score-wrapper div.op-score div.score')
         op_score = score_element.text if score_element else "N/A"
-        print(f"OP Score encontrado: {op_score}")  # Debugging output
     except NoSuchElementException:
         op_score = "N/A"
-        print("No se encontró el OP Score.")  # Debugging output
     return op_score
 
 def extraer_game_rank(jugador_element):
@@ -121,10 +126,8 @@ def extraer_game_rank(jugador_element):
         # Extraer el elemento div que contiene el Game Rank
         rank_element = jugador_element.find_element(By.CSS_SELECTOR, 'td.op-score-wrapper div.op-score div.rank div')
         game_rank = rank_element.text if rank_element else "N/A"
-        print(f"Game Rank encontrado: {game_rank}")  # Debugging output
     except NoSuchElementException:
         game_rank = "N/A"
-        print("No se encontró el Game Rank.")  # Debugging output
     return game_rank
 
 def extraer_kda(jugador_element):
