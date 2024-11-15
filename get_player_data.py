@@ -41,7 +41,7 @@ with open("partidas_links.txt", "r") as file:
             enlaces_partidas.append(enlace)
 
 # Archivo CSV donde se almacenan los resultados
-csv_file = "player_details.csv"
+csv_file = "game_details.csv"
 
 # Escribir la cabecera del archivo CSV
 with open(csv_file, "w", newline="", encoding="utf-8") as file:

@@ -17,7 +17,7 @@ from config import EDGE_DRIVER_PATH, INVOCADORES, TEAM_NAME
 # Ruta del archivo que contiene los enlaces de las partidas
 PARTIDAS_LINKS_FILE = "partidas_links.txt"
 # Archivo CSV de salida
-OUTPUT_CSV_FILE = "eventos_importantes.csv"
+OUTPUT_CSV_FILE = "timeline.csv"
 
 # Arreglo de invocadores del equipo
 invocadores_equipo = INVOCADORES
