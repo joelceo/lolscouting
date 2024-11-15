@@ -28,8 +28,15 @@ if not os.path.isfile(EDGE_DRIVER_PATH):
 
 # Configurar las opciones de Edge
 edge_options = Options()
+edge_options.add_argument("--headless")  # Ejecutar en modo headless
+edge_options.add_argument("--disable-blink-features=AutomationControlled")  # Evitar la detección de headless
 edge_options.add_argument("--start-maximized")
-edge_options.add_argument("--log-level=3")  # Silenciar la salida de log del navegador
+edge_options.add_argument("--log-level=3")
+edge_options.add_argument("--disable-gpu")
+edge_options.add_argument("--no-sandbox")
+edge_options.add_argument("--disable-dev-shm-usage")
+edge_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+edge_options.add_argument("--enable-unsafe-swiftshader")  # Habilitar SwiftShader para evitar advertencias de WebGL
 
 # Inicializar el navegador con Selenium
 service = Service(EDGE_DRIVER_PATH)
