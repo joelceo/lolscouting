@@ -261,7 +261,7 @@ try:
                             cs_total, cs_por_min = extraer_cs(jugador_element)
                             items = extraer_items(jugador_element)
 
-                            team = "yes" if nombre_invocador in invocadores_equipo else "no"
+                            team = TEAM_NAME if nombre_invocador in invocadores_equipo else "none"
                             side = sides[side_idx]
                             roles = ["TOP", "JG", "MID", "ADC", "SUPP"]
                             rol = roles[jugador_idx] if jugador_idx < len(roles) else "N/A"

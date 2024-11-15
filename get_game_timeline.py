@@ -12,7 +12,7 @@ import time
 import os
 
 # Importar variables desde config.py
-from config import EDGE_DRIVER_PATH, INVOCADORES
+from config import EDGE_DRIVER_PATH, INVOCADORES, TEAM_NAME
 
 # Ruta del archivo que contiene los enlaces de las partidas
 PARTIDAS_LINKS_FILE = "partidas_links.txt"
@@ -37,10 +37,7 @@ driver = webdriver.Edge(service=service, options=edge_options)
 
 # Función para convertir el tiempo al formato h:mm:ss
 def convertir_a_formato_tiempo(tiempo_str):
-    tiempo = int(tiempo_str)
-    minutos, segundos = divmod(tiempo, 60)
-    horas, minutos = divmod(minutos, 60)
-    return f"{horas}:{minutos:02}:{segundos:02}"
+    return f"0:{tiempo_str.replace(' ', ':')}"
 
 # Leer los enlaces de las partidas
 def leer_enlaces(file_path):
@@ -51,67 +48,65 @@ def leer_enlaces(file_path):
 def extraer_eventos_importantes(html, partida_numero):
     soup = BeautifulSoup(html, 'html.parser')
     eventos = []
-    timeline_div = soup.find('div', class_='timeline')
+    timeline_container = soup.find('div', class_='timeline-container')
 
-    if not timeline_div:
-        return eventos  # Si no se encuentra el div de timeline, no hay eventos que extraer
+    if not timeline_container:
+        print(f"[Partida {partida_numero}] No se encontró el div de 'timeline-container'.")
+        return eventos  # Si no se encuentra el div de timeline-container, no hay eventos que extraer
 
-    botones_eventos = timeline_div.find_all('button', class_='timeline--WIN') + timeline_div.find_all('button', class_='timeline--LOSE')
+    mensajes = timeline_container.find_all('div', class_='message')
 
-    # Extraer información de los equipos
-    equipo_azul_div = soup.find('div', class_='team--blue')
-    equipo_rojo_div = soup.find('div', class_='team--red')
-    
-    equipo_azul_invocadores = [span.get_text(strip=True).lower() for span in equipo_azul_div.find_all('span', class_='name')] if equipo_azul_div else []
-    equipo_rojo_invocadores = [span.get_text(strip=True).lower() for span in equipo_rojo_div.find_all('span', class_='name')] if equipo_rojo_div else []
+    for mensaje_div in mensajes:
+        # Extraer texto del evento
+        evento_texto_elemento = mensaje_div.find('div', class_='message')
+        evento_texto = evento_texto_elemento.get_text(strip=True) if evento_texto_elemento else "N/A"
+        # Reemplazar 'Horda Asesinado' por 'Larva Asesinada'
+        if evento_texto == "Horda Asesinado":
+            evento_texto = "Larva Asesinada"
 
-    for boton in botones_eventos:
-        mensaje_div = boton.find('div', class_='message')
-        if not mensaje_div:
+        # Extraer tiempo del evento
+        tiempo_div = mensaje_div.find('div', class_='time')
+        tiempo = convertir_a_formato_tiempo(tiempo_div.get_text(strip=True)) if tiempo_div else "N/A"
+
+        # Extraer ejecutor
+        ejecutor_element = mensaje_div.find('span', class_='css-ao94tw')
+        campeon_ejecutor_element = mensaje_div.find('img', alt=True)
+
+        ejecutor = ejecutor_element.get_text(strip=True).lower() if ejecutor_element else "N/A"
+        campeon_ejecutor = campeon_ejecutor_element['alt'] if campeon_ejecutor_element else "N/A"
+
+        # Log detallado de elementos encontrados
+        print(f"[Partida {partida_numero}] Datos extraídos - Evento: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}")
+
+        # Si el evento tiene información incompleta, tratar de identificar qué falta
+        if evento_texto == "N/A" or tiempo == "N/A" or ejecutor == "N/A" or campeon_ejecutor == "N/A":
+            print(f"[Partida {partida_numero}] Información incompleta para el evento. Evento: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}")
             continue
 
-        # Asegurarse de que el elemento de mensaje exista antes de llamar a get_text
-        evento_texto_elemento = mensaje_div.find('div', class_='message')
-        if evento_texto_elemento:
-            evento_texto = evento_texto_elemento.get_text(strip=True)
-        else:
-            evento_texto = "N/A"
+        # Determinar el equipo del ejecutor
+        equipo_azul_invocadores = [i.lower() for i in invocadores_equipo]
+        lado = "blue" if ejecutor in equipo_azul_invocadores else "red"
 
-        tiempo_div = mensaje_div.find('div', class_='time')
-        tiempo = tiempo_div.get_text(strip=True) if tiempo_div else "N/A"
+        # Determinar si el ejecutor pertenece al equipo especificado
+        pertenece_al_equipo = TEAM_NAME if ejecutor in equipo_azul_invocadores else "None"
 
-        invocador_elements = mensaje_div.find_all('span', class_='name')
-        campeon_elements = mensaje_div.find_all('img', alt=True)
+        print(f"[Partida {partida_numero}] Evento completo: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}, Lado: {lado}, Equipo: {pertenece_al_equipo}")
 
-        if len(campeon_elements) >= 1 and len(invocador_elements) >= 1:
-            campeon = campeon_elements[0]['alt']
-            invocador = invocador_elements[0].get_text(strip=True).lower()
-        else:
-            campeon, invocador = "N/A", "N/A"
+        # Añadir evento a la lista de eventos si tiene nombre
+        if evento_texto != "N/A":
+            eventos.append([partida_numero, tiempo, evento_texto, ejecutor, campeon_ejecutor, lado, pertenece_al_equipo])
 
-        # Determinar el equipo del invocador
-        if invocador in equipo_azul_invocadores:
-            lado = "Equipo Azul"
-        elif invocador in equipo_rojo_invocadores:
-            lado = "Equipo Rojo"
-        else:
-            lado = "N/A"
-
-        # Determinar si el invocador pertenece al equipo especificado
-        pertenece_al_equipo = "yes" if invocador in [i.lower() for i in invocadores_equipo] else "no"
-
-        if "Primera Sangre" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Sangre", invocador, campeon, "N/A", "N/A", lado, pertenece_al_equipo])
-        elif "Primera Torre" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Torre", invocador, campeon, "Torre", "N/A", lado, pertenece_al_equipo])
-        elif "Dragón Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Dragón Asesinado", invocador, campeon, "Dragón", "N/A", lado, pertenece_al_equipo])
-        elif "Horda Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Larva Asesinada", invocador, campeon, "Horda", "N/A", lado, pertenece_al_equipo])
-        elif "Barón Asesinado" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Barón Asesinado", invocador, campeon, "Barón", "N/A", lado, pertenece_al_equipo])
-        elif "Primera Torreta Destruida" in evento_texto:
-            eventos.append([partida_numero, tiempo, "Primera Torreta Destruida", invocador, campeon, "Torreta", "N/A", lado, pertenece_al_equipo])
+        # Crear nuevo evento "Primera Muerte" a partir de "Primera Sangre"
+        if evento_texto == "Primera Sangre":
+            objetivo_element = mensaje_div.find_all('img', alt=True)
+            if len(objetivo_element) > 1:
+                objetivo = objetivo_element[1]['alt']
+                objetivo_ejecutor_element = mensaje_div.find_all('span', class_='css-ao94tw')
+                if len(objetivo_ejecutor_element) > 1:
+                    invocador_objetivo = objetivo_ejecutor_element[1].get_text(strip=True).lower()
+                    lado_inverso = "red" if lado == "blue" else "blue"
+                    pertenece_al_equipo_inverso = TEAM_NAME if invocador_objetivo in [i.lower() for i in invocadores_equipo] else "None"
+                    eventos.append([partida_numero, tiempo, "Primera Muerte", invocador_objetivo, objetivo, lado_inverso, pertenece_al_equipo_inverso])
 
     return eventos
 
@@ -124,7 +119,7 @@ def escribir_eventos_csv(eventos, file_path):
     with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
         # Escribir encabezados
-        csvwriter.writerow(["Partida", "Tiempo", "Evento", "Invocador", "Campeón", "Objetivo", "Invocador Objetivo", "Lado", "Team"])
+        csvwriter.writerow(["Partida", "Tiempo", "Evento", "Ejecutor", "Campeón Ejecutor", "Lado", "Team"])
         # Escribir datos
         for evento in eventos:
             csvwriter.writerow(evento)
