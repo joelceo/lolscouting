@@ -47,10 +47,10 @@ csv_file = "game_details.csv"
 with open(csv_file, "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow([
-        "Partida", "Resultado", "Duración", "Nombre Invocador", "Campeón Utilizado", "Nivel Campeón", "Hechizo 1", "Hechizo 2", "Runa 1", "Runa 2",
-        "Kills", "Deaths", "Assists", "KP", "KDA Ratio", "Daño Realizado", "Daño Recibido",
-        "Control Wards", "Centinelas Colocados", "Centinelas Destruidos", "CS Total", "CS por Min", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Trinket",
-        "Team", "Side", "Rol"
+        "Partida", "Resultado", "Duración", "Nombre Invocador", "SoloQ", "OP Score" , "Game Rank" , 
+        "Campeón Utilizado", "Nivel Campeón", "Hechizo 1", "Hechizo 2", "Runa 1", "Runa 2", "Kills", "Deaths", "Assists", 
+        "KP", "KDA Ratio", "Daño Realizado", "Daño Recibido", "Control Wards", "Centinelas Colocados", "Centinelas Destruidos", 
+        "CS Total", "CS por Min", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Trinket", "Team", "Side", "Rol"
     ])
 
 # Arreglo de invocadores del equipo
