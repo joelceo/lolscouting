@@ -69,12 +69,11 @@ INVOCADORES = ["STIXGT", "katarinaDiff", "Randy04", "Report", "Tulijuli"]
 BUSCAR_CANT = 3
 TEAM_NAME = ""
 ------------------------------------------------------------------------------------------------------------------
-                incompleto de momento
 EDGE_DRIVER_PATH = r"C:\edgedriver_win64\msedgedriver.exe"
 SUMMONER_NAME = "Musashi-EAN"
 GAMEMODE = "FLEXRANKED"
 SERVER = "lan"
-INVOCADORES = ["Tanque de flores", "WarriorRS", "Musashi", "Jistoria", ""]
+INVOCADORES = ["Tanque de flores", "WarriorRS", "Musashi", "Jistoria", "Orion Lancer"]
 BUSCAR_CANT = 3
 TEAM_NAME = "Vongola Family VFX"
 

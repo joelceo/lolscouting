@@ -117,65 +117,59 @@ def extraer_eventos_importantes(html, partida_numero):
 
     return eventos
 
-# Escribir los eventos en un archivo CSV
-def escribir_eventos_csv(eventos, file_path):
-    # Si el archivo ya existe, eliminarlo para comenzar desde cero
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
-    with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
+# Proceso principal para extraer los eventos importantes de cada partida
+def procesar_partidas():
+    # Inicializar el archivo CSV vacío para una nueva ejecución
+    with open(OUTPUT_CSV_FILE, 'w', newline='', encoding='utf-8') as csvfile:
         csvwriter = csv.writer(csvfile)
         # Escribir encabezados
         csvwriter.writerow(["Partida", "Tiempo", "Evento", "Ejecutor", "Campeón Ejecutor", "Lado", "Team"])
-        # Escribir datos
-        for evento in eventos:
-            csvwriter.writerow(evento)
 
-# Proceso principal para extraer los eventos importantes de cada partida
-def procesar_partidas():
-    enlaces = leer_enlaces(PARTIDAS_LINKS_FILE)
-    partida_numero = 1
+        enlaces = leer_enlaces(PARTIDAS_LINKS_FILE)
+        partida_numero = 1
 
-    for enlace in enlaces:
-        try:
-            print(f"Abriendo enlace de partida {partida_numero}: {enlace}")
-            driver.get(enlace)
-            wait = WebDriverWait(driver, 15)
-            wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-            time.sleep(5)  # Esperar a que la página cargue completamente
-
-            # Hacer clic en "Análisis de equipo" y luego "Línea de tiempo"
+        for enlace in enlaces:
             try:
-                boton_analisis_equipo = driver.find_element(By.XPATH, "//button[span[text()='Análisis de equipo']]")
-                boton_analisis_equipo.click()
-                print("Hizo clic en Análisis de equipo")
-                time.sleep(3)
-                boton_linea_tiempo = driver.find_element(By.XPATH, "//button[span[text()='Línea de tiempo']]")
-                boton_linea_tiempo.click()
-                print("Hizo clic en Línea de tiempo")
-                time.sleep(5)
-            except NoSuchElementException:
-                print(f"No se encontraron los botones de análisis o línea de tiempo en la partida {partida_numero}")
-                partida_numero += 1
-                continue
+                print(f"Abriendo enlace de partida {partida_numero}: {enlace}")
+                driver.get(enlace)
+                wait = WebDriverWait(driver, 15)
+                wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+                time.sleep(5)  # Esperar a que la página cargue completamente
 
-            # Obtener el HTML actual de la página
-            html = driver.page_source
-            print(f"Extrayendo eventos de la partida {partida_numero}")
-            eventos = extraer_eventos_importantes(html, partida_numero)
+                # Hacer clic en "Análisis de equipo" y luego "Línea de tiempo"
+                try:
+                    boton_analisis_equipo = driver.find_element(By.XPATH, "//button[span[text()='Análisis de equipo']]")
+                    boton_analisis_equipo.click()
+                    print("Hizo clic en Análisis de equipo")
+                    time.sleep(3)
+                    boton_linea_tiempo = driver.find_element(By.XPATH, "//button[span[text()='Línea de tiempo']]")
+                    boton_linea_tiempo.click()
+                    print("Hizo clic en Línea de tiempo")
+                    time.sleep(5)
+                except NoSuchElementException:
+                    print(f"No se encontraron los botones de análisis o línea de tiempo en la partida {partida_numero}")
+                    partida_numero += 1
+                    continue
 
-            # Mostrar en consola los eventos encontrados antes de escribir en CSV
-            if eventos:
+                # Obtener el HTML actual de la página
+                html = driver.page_source
+                print(f"Extrayendo eventos de la partida {partida_numero}")
+                eventos = extraer_eventos_importantes(html, partida_numero)
+
+                # Mostrar en consola los eventos encontrados antes de escribir en CSV
+                if eventos:
+                    for evento in eventos:
+                        print(f"Evento encontrado: {evento}")
+                else:
+                    print(f"No se encontraron eventos importantes en la partida {partida_numero}")
+
+                # Escribir eventos al CSV
                 for evento in eventos:
-                    print(f"Evento encontrado: {evento}")
-            else:
-                print(f"No se encontraron eventos importantes en la partida {partida_numero}")
-
-            escribir_eventos_csv(eventos, OUTPUT_CSV_FILE)
-        except Exception as e:
-            print(f"Error abriendo el enlace de partida {partida_numero}: {e}")
-        
-        partida_numero += 1
+                    csvwriter.writerow(evento)
+            except Exception as e:
+                print(f"Error abriendo el enlace de partida {partida_numero}: {e}")
+            
+            partida_numero += 1
 
 # Ejecutar el script
 try:
