@@ -261,21 +261,42 @@ try:
                             cs_total, cs_por_min = extraer_cs(jugador_element)
                             items = extraer_items(jugador_element)
 
-                            team = TEAM_NAME if nombre_invocador in invocadores_equipo else "none"
+                            # DEBUGGING: Mostrar el nombre del invocador extraído
+                            print(f"[Partida {partida_idx}] Jugador: {nombre_invocador}")
+
+                            # DEBUGGING: Verificar los invocadores del equipo
+                            print(f"[Partida {partida_idx}] Invocadores del equipo: {invocadores_equipo}")
+
+                            # Normalizamos los nombres a minúsculas y eliminamos espacios en blanco
+                            nombre_invocador_normalizado = nombre_invocador.strip().lower()
+                            invocadores_equipo_normalizado = [invocador.strip().lower() for invocador in invocadores_equipo]
+
+                            # DEBUGGING: Mostrar el nombre del invocador normalizado
+                            print(f"[Partida {partida_idx}] Jugador Normalizado: {nombre_invocador_normalizado}")
+
+                            # Determinar si el invocador pertenece al equipo
+                            team = TEAM_NAME if nombre_invocador_normalizado in invocadores_equipo_normalizado else "none"
+
+                            # DEBUGGING: Log del resultado de la comparación
+                            if team == "none":
+                                print(f"[Partida {partida_idx}] El invocador '{nombre_invocador}' no se encontró en el equipo.")
+                            else:
+                                print(f"[Partida {partida_idx}] El invocador '{nombre_invocador}' pertenece al equipo '{TEAM_NAME}'.")
+
                             side = sides[side_idx]
                             roles = ["TOP", "JG", "MID", "ADC", "SUPP"]
                             rol = roles[jugador_idx] if jugador_idx < len(roles) else "N/A"
 
                             writer.writerow([
-                                partida_idx, resultado, duracion, nombre_invocador, rango_soloqueue, op_score, game_rank, 
-                                campeon_utilizado, nivel_campeon, hechizo_1, hechizo_2, runa_1, runa_2, kills, deaths, assists, 
+                                partida_idx, resultado, duracion, nombre_invocador, rango_soloqueue, op_score, game_rank,
+                                campeon_utilizado, nivel_campeon, hechizo_1, hechizo_2, runa_1, runa_2, kills, deaths, assists,
                                 kp, kda_ratio_element, daño_realizado, daño_recibido, control_wards, centinelas_colocados, centinelas_destruidos,
                                 cs_total, cs_por_min, *items, team, side, rol
                             ])
 
                         except Exception as e:
                             print(f"Error procesando el jugador en la partida {partida_idx}: {e}")
-
+        
         except Exception as e:
             print(f"Error abriendo el enlace de partida {partida_idx}: {e}")
 

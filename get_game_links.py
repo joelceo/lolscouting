@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 # Importar variables desde config.py
-from config import EDGE_DRIVER_PATH, SUMMONER_NAME, SERVER, INVOCADORES
+from config import EDGE_DRIVER_PATH, SUMMONER_NAME, SERVER, INVOCADORES, BUSCAR_CANT, GAMEMODE
 
 # Verificar si el controlador existe
 if not os.path.isfile(EDGE_DRIVER_PATH):
@@ -41,7 +41,7 @@ driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
 })
 
 # URL del sitio web
-url = f"https://www.op.gg/summoners/{SERVER}/{SUMMONER_NAME}?queue_type=FLEXRANKED"
+url = f"https://www.op.gg/summoners/{SERVER}/{SUMMONER_NAME}?queue_type={GAMEMODE}"
 print(f"Navegando a URL: {url}")
 
 try:
@@ -84,11 +84,11 @@ try:
                 else:
                     continue
 
-                # Comprobar si al menos 3 invocadores están en la partida
+                # Comprobar si al menos N invocadores están en la partida
                 invocadores_equipo = partida_element.text.lower().replace(" ", "").replace("-", "")
                 count = sum(1 for inv in INVOCADORES if inv.lower().replace(" ", "").replace("-", "") in invocadores_equipo)
 
-                if count >= 3:
+                if count >= BUSCAR_CANT:
                     # Abrir los detalles de la partida para obtener el enlace
                     detalles_button = partida_element.find_element(By.CSS_SELECTOR, 'button.btn-detail')
                     detalles_button.click()

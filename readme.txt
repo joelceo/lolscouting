@@ -4,7 +4,7 @@
 --Crea el archivo de "config.py" para establecer las variables, ejemplos de configuracion:
 EDGE_DRIVER_PATH = r"Directorio a tu edge webdriver"
 SUMMONER_NAME = "Nombre de invocador-Lema"
-GAMEMODE = "SOLORANKED" / "FLEXRANKED"
+GAMEMODE = "SOLORANKED / FLEXRANKED / TOTAL"
 SERVER = "lan"
 INVOCADORES = ["invocador 1", "invocador 2", "invocador 3", "invocador 4", "invocador 5"] 
 
