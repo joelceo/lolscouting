@@ -56,19 +56,14 @@ with open(csv_file, "w", newline="", encoding="utf-8") as file:
 # Arreglo de invocadores del equipo
 invocadores_equipo = INVOCADORES
 
-def extraer_resultado_y_duracion():
-    try:
-        resultado = driver.find_element(By.CSS_SELECTOR, 'div.result').text
-    except NoSuchElementException:
-        resultado = "N/A"
-
+def extraer_duracion():
     try:
         duracion = driver.find_element(By.CSS_SELECTOR, 'div.length').text
         # Añadir '0:' al principio para representar horas si es necesario
         duracion = f"0:{duracion.replace(' ', ':')}"
     except NoSuchElementException:
         duracion = "N/A"
-    return resultado, duracion
+    return duracion
 
 def extraer_nombre_invocador(jugador_element):
     try:
@@ -237,14 +232,26 @@ try:
             driver.get(enlace)
             wait = WebDriverWait(driver, 15)
             wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-
-            resultado, duracion = extraer_resultado_y_duracion()
+            
+            duracion = extraer_duracion() 
             equipos_elements = driver.find_elements(By.CSS_SELECTOR, 'div.css-10e7s6g.ehma9yf0 table.e13yshnv0')
-            sides = ["blue", "red"]
-
+            
             with open(csv_file, "a", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
-                for side_idx, equipo_element in enumerate(equipos_elements):
+                for team_index, equipo_element in enumerate(equipos_elements):
+                    # Extraer el nombre del equipo (azul o rojo) desde el encabezado <th>
+                    try:
+                        header_element = equipo_element.find_element(By.CSS_SELECTOR, 'thead th')
+                        header_text = header_element.text
+                        # Extraer el valor entre paréntesis para el lado del equipo
+                        team_side = header_text.split('(')[-1].replace(')', '').strip()
+                        # Extraer el resultado del equipo (Victoria o Derrota)
+                        resultado = header_element.find_element(By.CSS_SELECTOR, 'span.result').text.strip()
+                    except NoSuchElementException:
+                        team_side = "N/A"
+                        resultado = "N/A"
+
+                    # Ahora recorremos cada jugador en el equipo
                     jugadores_elements = equipo_element.find_elements(By.TAG_NAME, "tr")[1:]
                     for jugador_idx, jugador_element in enumerate(jugadores_elements):
                         try:
@@ -261,29 +268,15 @@ try:
                             cs_total, cs_por_min = extraer_cs(jugador_element)
                             items = extraer_items(jugador_element)
 
-                            # DEBUGGING: Mostrar el nombre del invocador extraído
-                            print(f"[Partida {partida_idx}] Jugador: {nombre_invocador}")
-
-                            # DEBUGGING: Verificar los invocadores del equipo
-                            print(f"[Partida {partida_idx}] Invocadores del equipo: {invocadores_equipo}")
-
                             # Normalizamos los nombres a minúsculas y eliminamos espacios en blanco
                             nombre_invocador_normalizado = nombre_invocador.strip().lower()
                             invocadores_equipo_normalizado = [invocador.strip().lower() for invocador in invocadores_equipo]
 
-                            # DEBUGGING: Mostrar el nombre del invocador normalizado
-                            print(f"[Partida {partida_idx}] Jugador Normalizado: {nombre_invocador_normalizado}")
-
                             # Determinar si el invocador pertenece al equipo
                             team = TEAM_NAME if nombre_invocador_normalizado in invocadores_equipo_normalizado else "none"
 
-                            # DEBUGGING: Log del resultado de la comparación
-                            if team == "none":
-                                print(f"[Partida {partida_idx}] El invocador '{nombre_invocador}' no se encontró en el equipo.")
-                            else:
-                                print(f"[Partida {partida_idx}] El invocador '{nombre_invocador}' pertenece al equipo '{TEAM_NAME}'.")
-
-                            side = sides[side_idx]
+                            # Renombrar 'side' a 'team_position' para evitar confusión
+                            team_position = "blue" if team_index == 0 else "red"
                             roles = ["TOP", "JG", "MID", "ADC", "SUPP"]
                             rol = roles[jugador_idx] if jugador_idx < len(roles) else "N/A"
 
@@ -291,7 +284,7 @@ try:
                                 partida_idx, resultado, duracion, nombre_invocador, rango_soloqueue, op_score, game_rank,
                                 campeon_utilizado, nivel_campeon, hechizo_1, hechizo_2, runa_1, runa_2, kills, deaths, assists,
                                 kp, kda_ratio_element, daño_realizado, daño_recibido, control_wards, centinelas_colocados, centinelas_destruidos,
-                                cs_total, cs_por_min, *items, team, side, rol
+                                cs_total, cs_por_min, *items, team, team_side, rol
                             ])
 
                         except Exception as e:
