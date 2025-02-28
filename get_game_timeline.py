@@ -82,22 +82,12 @@ def extraer_eventos_importantes(html, partida_numero):
         ejecutor = ejecutor_element.get_text(strip=True).lower() if ejecutor_element else "N/A"
         campeon_ejecutor = campeon_ejecutor_element['alt'] if campeon_ejecutor_element else "N/A"
 
-        # Log detallado de elementos encontrados
-        print(f"[Partida {partida_numero}] Datos extraídos - Evento: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}")
-
-        # Si el evento tiene información incompleta, tratar de identificar qué falta
-        if evento_texto == "N/A" or tiempo == "N/A" or ejecutor == "N/A" or campeon_ejecutor == "N/A":
-            print(f"[Partida {partida_numero}] Información incompleta para el evento. Evento: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}")
-            continue
-
         # Determinar el equipo del ejecutor
         equipo_azul_invocadores = [i.lower() for i in invocadores_equipo]
         lado = "blue" if ejecutor in equipo_azul_invocadores else "red"
 
         # Determinar si el ejecutor pertenece al equipo especificado
         pertenece_al_equipo = TEAM_NAME if ejecutor in equipo_azul_invocadores else "None"
-
-        print(f"[Partida {partida_numero}] Evento completo: {evento_texto}, Tiempo: {tiempo}, Ejecutor: {ejecutor}, Campeón Ejecutor: {campeon_ejecutor}, Lado: {lado}, Equipo: {pertenece_al_equipo}")
 
         # Añadir evento a la lista de eventos si tiene nombre
         if evento_texto != "N/A":
@@ -140,28 +130,18 @@ def procesar_partidas():
                 try:
                     boton_analisis_equipo = driver.find_element(By.XPATH, "//button[span[text()='Análisis de equipo']]")
                     boton_analisis_equipo.click()
-                    print("Hizo clic en Análisis de equipo")
+
                     time.sleep(3)
                     boton_linea_tiempo = driver.find_element(By.XPATH, "//button[span[text()='Línea de tiempo']]")
                     boton_linea_tiempo.click()
-                    print("Hizo clic en Línea de tiempo")
                     time.sleep(5)
                 except NoSuchElementException:
-                    print(f"No se encontraron los botones de análisis o línea de tiempo en la partida {partida_numero}")
                     partida_numero += 1
                     continue
 
                 # Obtener el HTML actual de la página
                 html = driver.page_source
-                print(f"Extrayendo eventos de la partida {partida_numero}")
                 eventos = extraer_eventos_importantes(html, partida_numero)
-
-                # Mostrar en consola los eventos encontrados antes de escribir en CSV
-                if eventos:
-                    for evento in eventos:
-                        print(f"Evento encontrado: {evento}")
-                else:
-                    print(f"No se encontraron eventos importantes en la partida {partida_numero}")
 
                 # Escribir eventos al CSV
                 for evento in eventos:
